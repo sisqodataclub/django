@@ -162,24 +162,6 @@ $(document).on('click', '.delete-product', function(e){
 
 </script>
 
-<!-- Keep this "Pay Now" button if you want to display the link on the page -->
-<a href="#" class="btn btn-secondary" id="payNowBtn">Pay Now</a>
 
-<div id="paymentLinkContainer"></div>
-
-<script>
-document.getElementById('payNowBtn').addEventListener('click', function () {
-    // Fetch the payment link from the server
-    fetch('{% url 'create_payment_link' %}')
-        .then(response => response.json())
-        .then(data => {
-            // Open the payment link in a new tab when the button is clicked
-            window.open(data.link_url, '_blank');
-        })
-        .catch(error => {
-            console.error('Error fetching payment link:', error);
-        });
-});
-</script>
 
 {% endblock %}

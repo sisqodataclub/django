@@ -4,7 +4,6 @@ from store.models import Product
 from django.http import JsonResponse
 from django.contrib import messages
 from django.http import JsonResponse
-import stripe
 from django.http import HttpResponse
 
 
@@ -73,43 +72,3 @@ def cart_update(request):
 		return response
 
 
-# Set your Stripe API key
-stripe.api_key = "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" 
-
-
-def create_payment_link(request):
-    amount =  5000 # Amount in cents (e.g., $50.00)
-    currency = "usd"
-    success_url = "http://localhost:8000/success/"  # Update with your success URL
-    cancel_url = "http://localhost:8000/cancel/"  # Update with your cancel URL
-
-    try:
-        line_items = [{
-            'price_data': {
-                'currency': currency,
-                'unit_amount': amount,
-                'product_data': {
-                    'name': 'Payment'
-                },
-            },
-            'quantity': 1,
-        }]
-        payment_link = stripe.checkout.Session.create(
-            success_url=success_url,
-            cancel_url=cancel_url,
-            payment_method_types=['card'],
-            line_items=line_items,
-            mode='payment',
-        )
-
-        # Retrieve the payment link URL
-        link_url = payment_link.url
-		
-
-        # Render the template with the payment link
-        return render(request, 'cart_summary.html', {'link_url': link_url})
-
-    except stripe.error.StripeError as e:
-        # Handle any errors that occur during payment link creation
-        print (f"Error creating payment link: {e}")
-        return render('payment_error.html')
